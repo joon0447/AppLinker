@@ -1,0 +1,6 @@
+name: AppLinker
+version: '1.0-SNAPSHOT'
+main: org.joon.appLinker.AppLinker
+api-version: '1.21'
+commands:
+  앱:
