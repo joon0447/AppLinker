@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.joon.appLinker.Constant.Message
+import org.joon.appLinker.Util.Firebase
 
 class LinkCommand(firestore: Firestore) : CommandExecutor {
     override fun onCommand(
@@ -16,7 +17,9 @@ class LinkCommand(firestore: Firestore) : CommandExecutor {
     ): Boolean {
         if(sender !is Player) return false
         val code = generateCode(CODE_LENGTH)
+        val uuid = sender.uniqueId.toString()
         sender.sendMessage(Message.codeMessage(code))
+        Firebase.saveCode(uuid, code)
         return true
     }
 
