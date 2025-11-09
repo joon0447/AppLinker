@@ -40,4 +40,23 @@ object Firebase {
         }
         return firestoreInstance
     }
+
+    fun saveCode(uuid: String, code: String): Boolean {
+        val data: Map<String, Any> = mapOf(
+            "uuid" to uuid,
+            "code" to code,
+            "expiresAt" to System.currentTimeMillis() + 24 * 60 * 60 * 1000
+        )
+        try {
+            val collection = firestoreInstance.collection("linkCodes")
+                .document(uuid)
+                .set(data)
+
+            collection.get()
+            return true
+        } catch(e: Exception) {
+            plugin.logger.warning(e.message)
+            return false
+        }
+    }
 }
