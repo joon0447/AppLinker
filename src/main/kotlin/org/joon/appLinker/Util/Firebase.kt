@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import org.joon.appLinker.AppLinker
+import org.joon.appLinker.Constant.LogMessage
 import java.io.File
 import java.io.FileInputStream
 
@@ -18,7 +19,7 @@ object Firebase {
 
         val keyFile = File(dataFolder, "serviceAccount.json")
         if (!keyFile.exists()) {
-            plugin.logger.warning("파이어베이스 계정 파일이 존재하지 않습니다.")
+            plugin.logger.warning(LogMessage.FIREBASE_FILE_NOT_EXIST.toString())
             return
         }
 
@@ -31,12 +32,12 @@ object Firebase {
         firestoreInstance = FirestoreClient.getFirestore()
         initialized = true
 
-        plugin.logger.info("파이어베이스 연결이 완료되었습니다.")
+        plugin.logger.info(LogMessage.FIREBASE_CONN_COMPLETE.toString())
     }
 
     fun getFirestore(): Firestore {
         if (!initialized) {
-            throw IllegalArgumentException("파이어베이스가 초기화되지 않았습니다.")
+            throw IllegalArgumentException(LogMessage.FIREBASE_NOT_INIT.toString())
         }
         return firestoreInstance
     }
