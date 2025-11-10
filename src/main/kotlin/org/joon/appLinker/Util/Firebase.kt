@@ -50,7 +50,7 @@ object Firebase {
         )
         try {
             val collection = firestoreInstance.collection("linkCodes")
-                .document(code)
+                .document(uuid)
                 .set(data)
 
             collection.get()
