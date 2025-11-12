@@ -4,7 +4,7 @@ main: org.joon.appLinker.AppLinker
 api-version: '1.21'
 commands:
   앱:
-
+  친구:
 libraries:
   - org.eclipse.jetty:jetty-server:11.0.26
   - org.eclipse.jetty:jetty-servlet:11.0.26
