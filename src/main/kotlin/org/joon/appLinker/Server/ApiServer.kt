@@ -17,7 +17,7 @@ class ApiServer(private val port: Int) {
         context.contextPath = "/"
         server.handler = context
 
-        context.addServlet(PlayerServlet::class.java, "/player")
+        context.addServlet(PlayerServlet::class.java, "/players")
         println("API 서버가 실행되었습니다.")
         server.start()
     }
