@@ -1,7 +1,9 @@
 package org.joon.appLinker.Util
 
 import com.google.auth.oauth2.GoogleCredentials
+import com.google.cloud.firestore.FieldValue
 import com.google.cloud.firestore.Firestore
+import com.google.cloud.firestore.SetOptions
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
@@ -60,4 +62,52 @@ object Firebase {
             return false
         }
     }
+
+    fun addFriend(ownerUuid: String, friendUuid: String): Boolean {
+        return try{
+            val docRef = firestoreInstance.collection("friends").document(ownerUuid)
+            val updates = mapOf("friends" to FieldValue.arrayUnion(friendUuid))
+            docRef.set(updates, SetOptions.merge()).get()
+            true
+        } catch(e: Exception) {
+            plugin.logger.warning(e.message)
+            false
+        }
+    }
+
+    fun removeFriend(ownerUuid: String, friendUuid: String): Boolean {
+        return try {
+        val docRef = firestoreInstance.collection("friends").document(ownerUuid)
+        val updates = mapOf("friends" to FieldValue.arrayRemove(friendUuid))
+        docRef.set(updates, SetOptions.merge()).get()
+        true
+        } catch (e: Exception) {
+            plugin.logger.warning("removeFriend error: ${e.message}")
+            false
+        }
+    }
+
+    fun isFriend(ownerUuid: String, friendUuid: String): Boolean {
+        return try {
+            val friends = getFriends(ownerUuid)
+            friendUuid in friends
+        } catch (e: Exception) {
+            plugin.logger.warning("isFriend error: ${e.message}")
+            false
+        }
+    }
+
+    fun getFriends(ownerUuid: String): List<String> {
+        return try {
+            val snap = firestoreInstance.collection("friends").document(ownerUuid).get().get()
+            @Suppress("UNCHECKED_CAST")
+            (snap.get("friends") as? List<String>)?.toList() ?: emptyList()
+        } catch (e: Exception) {
+            plugin.logger.warning("getFriends error: ${e.message}")
+            emptyList()
+        }
+    }
 }
+
+
+
