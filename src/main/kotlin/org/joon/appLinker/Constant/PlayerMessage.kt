@@ -12,6 +12,8 @@ object PlayerMessage {
     val FRIEND_ADD = "${prefix}친구 추가가 완료되었습니다."
     val PLAYER_NOT_EXIST = "${prefix}플레이어가 존재하지 않습니다."
 
+    val PLAYER_REWARD = "${prefix} 앱 출석체크 보상이 지급되었습니다!"
+
     fun codeMessage(code: String): String {
         return LINK_CODE.format(code)
     }
