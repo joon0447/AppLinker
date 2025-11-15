@@ -11,6 +11,9 @@ import org.joon.appLinker.AppLinker
 import org.joon.appLinker.Constant.LogMessage
 import java.io.File
 import java.io.FileInputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object Firebase {
     private var initialized = false
@@ -105,6 +108,39 @@ object Firebase {
         } catch (e: Exception) {
             plugin.logger.warning("getFriends error: ${e.message}")
             emptyList()
+        }
+    }
+
+    fun checkReceivedReward(uuid: String): Boolean {
+        return try {
+            val doc = firestoreInstance.collection("rewards").document(uuid).get().get()
+
+            if (!doc.exists()) return false
+
+            val rewardedAt = doc.getString("rewardedAt") ?: return false
+
+            val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            rewardedAt == today
+        } catch (e: Exception) {
+            plugin.logger.warning("출석보상 확인 오류: ${e.message}")
+            false
+        }
+    }
+
+    fun recordRewardGiven(uuid: String): Boolean {
+        return try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val formattedDate = dateFormat.format(Date())
+
+            val data = mapOf(
+                "rewarded" to true,
+                "rewardedAt" to formattedDate
+            )
+            firestoreInstance.collection("rewards").document(uuid).set(data).get()
+            true
+        } catch (e: Exception) {
+            plugin.logger.warning("출석보상 기록 오류: ${e.message}")
+            false
         }
     }
 }
