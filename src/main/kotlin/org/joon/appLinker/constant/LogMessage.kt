@@ -1,4 +1,4 @@
-package org.joon.appLinker.Constant
+package org.joon.appLinker.constant
 
 enum class LogMessage(val text: String) {
     FIREBASE_FILE_NOT_EXIST("파이어베이스 계정 파일이 존재하지 않습니다."),

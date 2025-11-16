@@ -1,4 +1,4 @@
-package org.joon.appLinker.Util
+package org.joon.appLinker.util
 
 import org.joon.appLinker.AppLinker
 

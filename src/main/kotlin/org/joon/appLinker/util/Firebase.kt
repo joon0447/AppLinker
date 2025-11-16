@@ -1,4 +1,4 @@
-package org.joon.appLinker.Util
+package org.joon.appLinker.util
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.FieldValue
@@ -8,7 +8,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import org.joon.appLinker.AppLinker
-import org.joon.appLinker.Constant.LogMessage
+import org.joon.appLinker.constant.LogMessage
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat

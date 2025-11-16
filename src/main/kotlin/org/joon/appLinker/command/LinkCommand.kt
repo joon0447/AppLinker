@@ -1,12 +1,12 @@
-package org.joon.appLinker.Command
+package org.joon.appLinker.command
 
 import com.google.cloud.firestore.Firestore
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.joon.appLinker.Constant.PlayerMessage
-import org.joon.appLinker.Util.Firebase
+import org.joon.appLinker.constant.PlayerMessage
+import org.joon.appLinker.util.Firebase
 
 class LinkCommand(firestore: Firestore) : CommandExecutor {
     override fun onCommand(

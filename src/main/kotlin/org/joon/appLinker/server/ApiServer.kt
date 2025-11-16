@@ -1,4 +1,4 @@
-package org.joon.appLinker.Server
+package org.joon.appLinker.server
 
 
 import jakarta.servlet.http.HttpServlet
@@ -10,9 +10,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.ServletContextHandler
-import org.joon.appLinker.AppLinker
-import org.joon.appLinker.Constant.PlayerMessage
-import org.joon.appLinker.Util.Firebase
+import org.joon.appLinker.constant.PlayerMessage
+import org.joon.appLinker.util.Firebase
 import java.util.UUID
 
 

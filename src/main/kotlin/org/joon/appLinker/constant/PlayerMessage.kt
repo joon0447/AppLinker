@@ -1,4 +1,4 @@
-package org.joon.appLinker.Constant
+package org.joon.appLinker.constant
 
 import org.bukkit.ChatColor
 

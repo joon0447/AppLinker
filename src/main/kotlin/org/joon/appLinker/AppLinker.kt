@@ -1,11 +1,11 @@
 package org.joon.appLinker
 
 import org.bukkit.plugin.java.JavaPlugin
-import org.joon.appLinker.Command.FriendCommand
-import org.joon.appLinker.Command.LinkCommand
-import org.joon.appLinker.Server.ApiServer
-import org.joon.appLinker.Util.DataFolder
-import org.joon.appLinker.Util.Firebase
+import org.joon.appLinker.command.FriendCommand
+import org.joon.appLinker.command.LinkCommand
+import org.joon.appLinker.server.ApiServer
+import org.joon.appLinker.util.DataFolder
+import org.joon.appLinker.util.Firebase
 
 class AppLinker : JavaPlugin() {
 
