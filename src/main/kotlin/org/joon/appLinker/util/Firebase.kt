@@ -20,24 +20,29 @@ object Firebase {
     private lateinit var firestoreInstance: Firestore
     private val plugin = AppLinker.plugin
     fun initFirebase() {
-        val dataFolder = plugin.dataFolder
+        val keyFile = getFirebaseKeyFile() ?: return
+        initializeApp(keyFile)
+        firestoreInstance = FirestoreClient.getFirestore()
+        initialized = true
+        plugin.logger.info(LogMessage.FIREBASE_CONN_COMPLETE.toString())
+    }
 
-        val keyFile = File(dataFolder, "serviceAccount.json")
+    private fun getFirebaseKeyFile(): File? {
+        val keyFile = File(plugin.dataFolder, "serviceAccount.json")
         if (!keyFile.exists()) {
             plugin.logger.warning(LogMessage.FIREBASE_FILE_NOT_EXIST.toString())
-            return
+            return null
         }
+        return keyFile
+    }
 
+    private fun initializeApp(keyFile: File) {
         val options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(FileInputStream(keyFile)))
             .setProjectId("minecraft-applinker")
             .build()
 
         FirebaseApp.initializeApp(options)
-        firestoreInstance = FirestoreClient.getFirestore()
-        initialized = true
-
-        plugin.logger.info(LogMessage.FIREBASE_CONN_COMPLETE.toString())
     }
 
     fun getFirestore(): Firestore {
