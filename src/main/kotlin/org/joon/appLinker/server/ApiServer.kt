@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.eclipse.jetty.server.Server
@@ -53,51 +54,64 @@ class ApiServer(private val port: Int) {
 
     class CheckServlet : HttpServlet() {
         override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
-            val path = req.pathInfo
-            val uuidStr = path?.removePrefix("/")?.trim()
+            val uuid = extractUUID(req, resp) ?: return
+            if (Firebase.checkReceivedReward(uuid.toString())) {
+                alreadyCheck(resp)
+                return
+            }
+            val player = Bukkit.getPlayer(uuid)
+            if (player != null && player.isOnline) {
+                giveReward(player)
+                Firebase.recordRewardGiven(uuid.toString())
+                giveResponse(resp, player)
+            } else {
+                playerOfflineResponse(resp)
+            }
+        }
 
-            val uuid = try {
+        private fun extractUUID(req: HttpServletRequest, resp: HttpServletResponse): UUID? {
+            val uuidStr = req.pathInfo?.removePrefix("/")?.trim()
+            return try {
                 UUID.fromString(uuidStr)
             } catch (e: IllegalArgumentException) {
                 resp.status = 400
                 resp.contentType = "application/json"
-                resp.writer.write("""{"error": "Invalid UUID"}""")
-                return
+                resp.writer.write("""{"error": "잘못된 UUID입니다."}""")
+                null
             }
+        }
 
-            if (Firebase.checkReceivedReward(uuid.toString())) {
-                resp.status = 409
-                resp.contentType = "application/json"
-                resp.writer.write("""{"status": "fail", "message": "이미 보상을 지급받은 플레이어입니다."}""")
-                return
-            }
+        private fun alreadyCheck(resp: HttpServletResponse) {
+            resp.status = 409
+            resp.contentType = "application/json"
+            resp.writer.write("""{"status": "fail", "message": "이미 보상을 지급받은 플레이어입니다."}""")
+        }
 
-            val player = Bukkit.getPlayer(uuid)
-            if (player != null && player.isOnline) {
-                Bukkit.getScheduler().runTask(
-                    JavaPlugin.getProvidingPlugin(this::class.java),
-                    Runnable {
-                        val reward = ItemStack(Material.DIAMOND, 3)
-                        player.inventory.addItem(reward)
-                        player.sendMessage(PlayerMessage.PLAYER_REWARD)
-                    })
+        private fun giveReward(player: Player) {
+            Bukkit.getScheduler().runTask(
+                JavaPlugin.getProvidingPlugin(this::class.java),
+                Runnable {
+                    val reward = ItemStack(Material.DIAMOND, 3)
+                    player.inventory.addItem(reward)
+                    player.sendMessage(PlayerMessage.PLAYER_REWARD)
+                })
+        }
 
-                Firebase.recordRewardGiven(uuid.toString())
-                resp.status = 200
-                resp.contentType = "application/json"
-                resp.writer.write(
-                    """
+        private fun giveResponse(resp: HttpServletResponse, player: Player) {
+            resp.status = 200
+            resp.contentType = "application/json"
+            resp.writer.write(
+                """
                     {"status": "success",
                      "message": "${player.name}에게 보상이 지급되었습니다."}
                     """.trimIndent()
-                )
-            } else {
-                resp.status = 404
-                resp.contentType = "application/json"
-                resp.writer.write("""{"status": "fail", "message": "플레이어가 온라인이 아닙니다."}""")
-            }
+            )
+        }
+
+        private fun playerOfflineResponse(resp: HttpServletResponse) {
+            resp.status = 404
+            resp.contentType = "application/json"
+            resp.writer.write("""{"status": "fail", "message": "플레이어가 온라인이 아닙니다."}""")
         }
     }
-
-
 }
