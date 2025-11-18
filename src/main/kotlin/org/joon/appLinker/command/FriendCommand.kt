@@ -17,39 +17,70 @@ class FriendCommand : CommandExecutor {
         args: Array<out String>
     ): Boolean {
         if (sender !is Player) return false
-
-        val arg = args[0]
-        if (args.isEmpty() || arg != "추가" || args.size < 2) {
-            sender.sendMessage(PlayerMessage.FRIEND_USAGE)
-            return true
-        }
-
+        if(!argValidate(args, sender)) return false
         val targetName = args[1]
-        val targetPlayer = Bukkit.getPlayer(targetName)
-        if (targetPlayer == null) {
-            sender.sendMessage(PlayerMessage.PLAYER_NOT_EXIST)
-            return true
-        }
-        val targetUUID = targetPlayer.uniqueId.toString()
+
+        if(!targetValidate(targetName, sender)) return false
+        if(!friendValidate(targetName, sender)) return false
+
         val senderUUID = sender.uniqueId.toString()
-        if (targetUUID == senderUUID) {
-            sender.sendMessage(PlayerMessage.FRIEND_NOT_MYSELF)
-            return true
-        }
+        val targetUUID = Bukkit.getPlayer(targetName)?.uniqueId.toString()
 
-        if (Firebase.isFriend(senderUUID, targetUUID)) {
-            sender.sendMessage(PlayerMessage.FRIEND_ALREADY)
-            return true
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
-            val ok = Firebase.addFriend(senderUUID, targetUUID)
-            Bukkit.getScheduler().runTask(plugin, Runnable {
-                if (ok) sender.sendMessage(PlayerMessage.FRIEND_ADD)
-            })
-        })
+        if(args[0] == "추가") addFriend(sender, targetUUID)
 
         return true
     }
+}
 
+private fun argValidate(
+    args: Array<out String>,
+    sender: Player
+): Boolean {
+    if (args.isEmpty() || args.size < 2) {
+        sender.sendMessage(PlayerMessage.FRIEND_USAGE_1)
+        sender.sendMessage(PlayerMessage.FRIEND_USAGE_2)
+        return false
+    }
+    if (args[0] != "추가" && args[1] != "삭제") {
+        sender.sendMessage(PlayerMessage.FRIEND_USAGE_1)
+        sender.sendMessage(PlayerMessage.FRIEND_USAGE_2)
+        return false
+    }
+    return true
+}
+
+private fun targetValidate(targetName: String, sender: Player): Boolean {
+    val targetPlayer = Bukkit.getPlayer(targetName)
+    if (targetPlayer == null) {
+        sender.sendMessage(PlayerMessage.PLAYER_NOT_EXIST)
+        return false
+    }
+    val targetUUID = targetPlayer.uniqueId.toString()
+    val senderUUID = sender.uniqueId.toString()
+    if (targetUUID == senderUUID) {
+        sender.sendMessage(PlayerMessage.FRIEND_NOT_MYSELF)
+        return false
+    }
+    return true
+}
+
+private fun friendValidate(targetName: String, sender: Player): Boolean {
+    val targetPlayer = Bukkit.getPlayer(targetName)
+    val targetUUID = targetPlayer?.uniqueId.toString()
+    val senderUUID = sender.uniqueId.toString()
+    if (Firebase.isFriend(senderUUID, targetUUID)) {
+        sender.sendMessage(PlayerMessage.FRIEND_ALREADY)
+        return false
+    }
+    return true
+}
+
+private fun addFriend(sender: Player, targetUUID: String) {
+    val senderUUID = sender.uniqueId.toString()
+    Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+        val ok = Firebase.addFriend(senderUUID, targetUUID)
+        Bukkit.getScheduler().runTask(plugin, Runnable {
+            if (ok) sender.sendMessage(PlayerMessage.FRIEND_ADD)
+        })
+    })
 }
