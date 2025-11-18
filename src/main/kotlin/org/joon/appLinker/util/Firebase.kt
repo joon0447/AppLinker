@@ -60,19 +60,19 @@ object Firebase {
 
             collection.get()
             return true
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             plugin.logger.warning(e.message)
             return false
         }
     }
 
     fun addFriend(ownerUuid: String, friendUuid: String): Boolean {
-        return try{
+        return try {
             val docRef = firestoreInstance.collection("friends").document(ownerUuid)
             val updates = mapOf("friends" to FieldValue.arrayUnion(friendUuid))
             docRef.set(updates, SetOptions.merge()).get()
             true
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             plugin.logger.warning(e.message)
             false
         }
@@ -80,10 +80,10 @@ object Firebase {
 
     fun removeFriend(ownerUuid: String, friendUuid: String): Boolean {
         return try {
-        val docRef = firestoreInstance.collection("friends").document(ownerUuid)
-        val updates = mapOf("friends" to FieldValue.arrayRemove(friendUuid))
-        docRef.set(updates, SetOptions.merge()).get()
-        true
+            val docRef = firestoreInstance.collection("friends").document(ownerUuid)
+            val updates = mapOf("friends" to FieldValue.arrayRemove(friendUuid))
+            docRef.set(updates, SetOptions.merge()).get()
+            true
         } catch (e: Exception) {
             plugin.logger.warning("removeFriend error: ${e.message}")
             false

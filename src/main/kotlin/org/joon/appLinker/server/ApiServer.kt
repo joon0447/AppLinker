@@ -65,7 +65,7 @@ class ApiServer(private val port: Int) {
                 return
             }
 
-            if(Firebase.checkReceivedReward(uuid.toString())) {
+            if (Firebase.checkReceivedReward(uuid.toString())) {
                 resp.status = 409
                 resp.contentType = "application/json"
                 resp.writer.write("""{"status": "fail", "message": "이미 보상을 지급받은 플레이어입니다."}""")
@@ -74,12 +74,13 @@ class ApiServer(private val port: Int) {
 
             val player = Bukkit.getPlayer(uuid)
             if (player != null && player.isOnline) {
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(this::class.java),
+                Bukkit.getScheduler().runTask(
+                    JavaPlugin.getProvidingPlugin(this::class.java),
                     Runnable {
-                    val reward = ItemStack(Material.DIAMOND, 3)
-                    player.inventory.addItem(reward)
-                    player.sendMessage(PlayerMessage.PLAYER_REWARD)
-                })
+                        val reward = ItemStack(Material.DIAMOND, 3)
+                        player.inventory.addItem(reward)
+                        player.sendMessage(PlayerMessage.PLAYER_REWARD)
+                    })
 
                 Firebase.recordRewardGiven(uuid.toString())
                 resp.status = 200

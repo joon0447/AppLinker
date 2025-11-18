@@ -15,7 +15,7 @@ class LinkCommand(firestore: Firestore) : CommandExecutor {
         label: String,
         args: Array<out String>
     ): Boolean {
-        if(sender !is Player) return false
+        if (sender !is Player) return false
         val code = generateCode(CODE_LENGTH)
         val uuid = sender.uniqueId.toString()
         sender.sendMessage(PlayerMessage.codeMessage(code))

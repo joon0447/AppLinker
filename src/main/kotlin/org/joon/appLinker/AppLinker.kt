@@ -9,7 +9,7 @@ import org.joon.appLinker.util.Firebase
 
 class AppLinker : JavaPlugin() {
 
-    private lateinit var apiServer : ApiServer
+    private lateinit var apiServer: ApiServer
 
     override fun onEnable() {
         plugin = this
@@ -32,7 +32,7 @@ class AppLinker : JavaPlugin() {
     }
 
     companion object {
-        lateinit var plugin : AppLinker
+        lateinit var plugin: AppLinker
             private set
     }
 }

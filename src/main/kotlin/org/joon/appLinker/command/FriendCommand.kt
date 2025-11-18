@@ -17,17 +17,17 @@ class FriendCommand : CommandExecutor {
         args: Array<out String>
     ): Boolean {
         if (sender !is Player) return false
-        if(!argValidate(args, sender)) return false
+        if (!argValidate(args, sender)) return false
         val targetName = args[1]
 
-        if(!targetValidate(targetName, sender)) return false
+        if (!targetValidate(targetName, sender)) return false
         val targetUUID = Bukkit.getPlayer(targetName)?.uniqueId.toString()
 
-        if(args[0] == "추가"){
-            if(!friendValidate(targetName, sender)) return false
+        if (args[0] == "추가") {
+            if (!friendValidate(targetName, sender)) return false
             addFriend(sender, targetUUID)
         }
-        if(args[0] == "삭제") removeFriend(sender, targetUUID)
+        if (args[0] == "삭제") removeFriend(sender, targetUUID)
         return true
     }
 }
