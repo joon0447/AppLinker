@@ -11,6 +11,7 @@ object PlayerMessage {
     val FRIEND_NOT_MYSELF = "${prefix}자기 자신은 친구로 추가할 수 없습니다."
     val FRIEND_ALREADY = "${prefix}이미 친구입니다."
     val FRIEND_ADD = "${prefix}친구 추가가 완료되었습니다."
+    val FRIEND_REMOVE = "${prefix}친구 삭제가 완료되었습니다."
     val PLAYER_NOT_EXIST = "${prefix}플레이어가 존재하지 않습니다."
 
     val PLAYER_REWARD = "${prefix} 앱 출석체크 보상이 지급되었습니다!"

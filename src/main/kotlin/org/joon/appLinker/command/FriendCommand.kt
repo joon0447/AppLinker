@@ -21,13 +21,13 @@ class FriendCommand : CommandExecutor {
         val targetName = args[1]
 
         if(!targetValidate(targetName, sender)) return false
-        if(!friendValidate(targetName, sender)) return false
-
-        val senderUUID = sender.uniqueId.toString()
         val targetUUID = Bukkit.getPlayer(targetName)?.uniqueId.toString()
 
-        if(args[0] == "추가") addFriend(sender, targetUUID)
-
+        if(args[0] == "추가"){
+            if(!friendValidate(targetName, sender)) return false
+            addFriend(sender, targetUUID)
+        }
+        if(args[0] == "삭제") removeFriend(sender, targetUUID)
         return true
     }
 }
@@ -41,7 +41,7 @@ private fun argValidate(
         sender.sendMessage(PlayerMessage.FRIEND_USAGE_2)
         return false
     }
-    if (args[0] != "추가" && args[1] != "삭제") {
+    if (args[0] != "추가" && args[0] != "삭제") {
         sender.sendMessage(PlayerMessage.FRIEND_USAGE_1)
         sender.sendMessage(PlayerMessage.FRIEND_USAGE_2)
         return false
@@ -81,6 +81,16 @@ private fun addFriend(sender: Player, targetUUID: String) {
         val ok = Firebase.addFriend(senderUUID, targetUUID)
         Bukkit.getScheduler().runTask(plugin, Runnable {
             if (ok) sender.sendMessage(PlayerMessage.FRIEND_ADD)
+        })
+    })
+}
+
+private fun removeFriend(sender: Player, targetUUID: String) {
+    val senderUUID = sender.uniqueId.toString()
+    Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+        val ok = Firebase.removeFriend(senderUUID, targetUUID)
+        Bukkit.getScheduler().runTask(plugin, Runnable {
+            if (ok) sender.sendMessage(PlayerMessage.FRIEND_REMOVE)
         })
     })
 }
